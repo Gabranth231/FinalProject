@@ -31,7 +31,7 @@ public class main {
         encryptedText = new char[paddedTextLen];
         while (i < paddedTextLen){
             for(int a = 0;a<16;a++){
-                temp[a] = paddedText[a];
+                temp[a] = paddedText[a+i];
             }
             char[] t = obj.encrypt(temp);
             for(int a = 0;a<16;a++){

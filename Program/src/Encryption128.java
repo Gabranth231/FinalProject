@@ -1,9 +1,10 @@
 
 import java.util.Random;
+import java.util.Scanner;
 
 public class Encryption128 {
     private char state[];
-    private char[] key = {1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+    private char[] key = new char[16];
     private char[] ExpandedKey;
 
     private char[] mul2 = {
@@ -89,10 +90,20 @@ public class Encryption128 {
     }
 
     Encryption128(){
-        //setKey();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter 1 for generated key or 2 for random key: ");
+        int mynum = sc.nextInt();
+        if(mynum == 1){
+            for(int i = 1;i<=16;i++){
+                key[i-1] = (char)i; // set key
+            }
+        }
+        else if(mynum == 2){
+            setKey();       //random key of characters
+        }
         KeyExpansion(key);
     }
-    public void KeyExpansionCore(char[] in, int num){
+    public char[] KeyExpansionCore(char[] in, int num){
         //rotate left
         char temp = in[0];
         in[0] = in[1];
@@ -104,31 +115,39 @@ public class Encryption128 {
             in[i] = sBox[in[i]];
         }
         //RCon look up table
-        in[0] ^= rCon[num];
+        in[0] = (char) (in[0] ^ rCon[num]);
+
+        return in;
     }
     public void KeyExpansion(char[] key){
         ExpandedKey = new char[176];
         //First 16 bytes are the original key in the first add round key
         for (int i = 0;i<16;i++){
-            ExpandedKey[i] = key[i];    //set first 16 bytes as random key for Expansion
+            ExpandedKey[i] = key[i];    //copy first 16 bytes of random key for Expansion
         }
         int bytesDone = 16;
         int rConNum = 1;
-        char[] temp = new char[4];
+        char[] temp = new char[4];  //storing for the core
         while(bytesDone<176){
             for(int i = 0;i<4;i++){
                 temp[i] = ExpandedKey[i + bytesDone-4];
-
-                if(bytesDone % 16 == 0){
-                    KeyExpansionCore(temp,rConNum++);
-                }
-
-                for(int a = 0;a<4;a++){
-                    ExpandedKey[bytesDone] = (char) (ExpandedKey[bytesDone - 16] ^ temp[a]);
-                    bytesDone++;
-                }
+            }
+            //once every key do core.
+            if(bytesDone % 16 == 0){
+                temp = KeyExpansionCore(temp,rConNum++);
+            }
+            for(int a = 0;a<4;a++){
+                ExpandedKey[bytesDone] = (char) (ExpandedKey[bytesDone - 16] ^ temp[a]);
+                bytesDone++;
             }
         }
+        for(int i = 0;i<176;i++){
+            System.out.printf("0x%02x ",(int)ExpandedKey[i]);
+            if(i%16==0&&i!=0){
+                System.out.printf("  ");
+            }
+        }
+        System.out.printf("\n\r");
     }
     public char[] encrypt(char[] text){
         state = new char[16];
@@ -145,7 +164,7 @@ public class Encryption128 {
             ShiftRows(state);
             MixColoums(state);
             for(int a = 0;a<16;a++){
-                roundKey[a] = ExpandedKey[a+(i+1)*16];
+                roundKey[a] = ExpandedKey[a+16*(i+1)];
             }
             AddRoundKey(state,roundKey);
         }
@@ -164,6 +183,7 @@ public class Encryption128 {
         for(int i = 0;i<16;i++){
             state[i] = sBox[state[i]];
         }
+
     }
     public void ShiftRows(char[] state){
        char[] temp = new char[16];
@@ -190,6 +210,7 @@ public class Encryption128 {
 
         for (int i = 0;i<16;i++){
             state[i] = temp[i];
+
         }
 
     }
@@ -218,12 +239,16 @@ public class Encryption128 {
 
         for(int i = 0;i<16;i++){
             state[i] = temp[i];
+
         }
+
     }
     public void AddRoundKey(char[] state, char[] key){
         for (int i = 0;i<16;i++){
             state[i] = (char) (state[i] ^ key[i]);
+
         }
+
     }
 
 }
