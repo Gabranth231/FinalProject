@@ -39,9 +39,14 @@ public class main {
             }
             i+=16;
         }
-
+        System.out.println("Encrypted text");
+        int count = 0;
         for(char a: encryptedText){
-            System.out.printf(String.format("%02x ",(int) a));
+            if(count % 16 == 0 && count != 0){
+                System.out.println();
+            }
+            System.out.printf(String.format("0x%02x ",(int) a));
+            count++;
         }
     }
 }

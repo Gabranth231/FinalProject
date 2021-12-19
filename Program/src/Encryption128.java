@@ -117,6 +117,7 @@ public class Encryption128 {
         //RCon look up table
         in[0] = (char) (in[0] ^ rCon[num]);
 
+
         return in;
     }
     public void KeyExpansion(char[] key){
@@ -142,12 +143,12 @@ public class Encryption128 {
             }
         }
         for(int i = 0;i<176;i++){
-            System.out.printf("0x%02x ",(int)ExpandedKey[i]);
             if(i%16==0&&i!=0){
-                System.out.printf("  ");
+                System.out.printf(" Key %d\n\r",(i/16)-1);
             }
+            System.out.printf("0x%02x ",(int)ExpandedKey[i]);
         }
-        System.out.printf("\n\r");
+        System.out.printf(" Key 10\n\r");
     }
     public char[] encrypt(char[] text){
         state = new char[16];
@@ -157,9 +158,11 @@ public class Encryption128 {
              state[i] = text[i];
         }
         int rounds = 9;
+        printStatePerRound(state,-1);   //round 0, preRound
 
         AddRoundKey(state,key);
-        for(int i = 0;i<rounds;i++){
+        printStatePerRound(state,0);   //round 0, preRound
+        for(int i = 0;i<rounds;i++){        //rounds 1-9
             SubBytes(state);
             ShiftRows(state);
             MixColoums(state);
@@ -167,6 +170,7 @@ public class Encryption128 {
                 roundKey[a] = ExpandedKey[a+16*(i+1)];
             }
             AddRoundKey(state,roundKey);
+            printStatePerRound(state,i+1);
         }
 
         SubBytes(state);
@@ -175,7 +179,7 @@ public class Encryption128 {
             roundKey[a] = ExpandedKey[a+160];
         }
         AddRoundKey(state,roundKey);
-
+        printStatePerRound(state,10);       //final round
         return state;
     }
 
@@ -248,7 +252,22 @@ public class Encryption128 {
             state[i] = (char) (state[i] ^ key[i]);
 
         }
-
+    }
+    public void printStatePerRound(char[] state,int round){
+        switch(round){
+            case -1:
+                System.out.println("First 16 bytes of text");
+                break;
+            case 0:
+                System.out.println("PreRound");
+                break;
+            default:
+                System.out.printf("Round Number %d\n\r",round);
+        }
+        for(char a: state){
+            System.out.printf(String.format("0x%02x ",(int) a));
+        }
+        System.out.println("\n\r");
     }
 
 }
