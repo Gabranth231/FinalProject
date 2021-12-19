@@ -1,9 +1,9 @@
 
 function UserPage() {
   return(
-    <div>
+    <h1>
       User Page
-    </div>
+    </h1>
   );
 }
 
