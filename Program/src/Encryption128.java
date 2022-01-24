@@ -117,7 +117,6 @@ public class Encryption128 {
         //RCon look up table
         in[0] = (char) (in[0] ^ rCon[num]);
 
-
         return in;
     }
     public void KeyExpansion(char[] key){
@@ -256,7 +255,7 @@ public class Encryption128 {
     public void printStatePerRound(char[] state,int round){
         switch(round){
             case -1:
-                System.out.println("First 16 bytes of text");
+                System.out.println("State bytes");
                 break;
             case 0:
                 System.out.println("PreRound");
