@@ -50,4 +50,83 @@ public class Decryption implements SharedAES{
         }
         System.out.printf(" Key 10\n\r");
     }
+    Decryption(char[] myKey){
+        KeyExpansion(myKey);
+    }
+
+    public char[] decrypt(char[] cipherText){
+        state = new char[16];
+        char[] roundKey =new char[16];
+
+        for(int i = 0;i<16;i++){
+            state[i] = cipherText[i];
+        }
+        printStatePerRound(state,-1);
+        for(int a = 0;a<16;a++){
+            roundKey[a] = ExpandedKey[(ExpandedKey.length-16) + a];//key 10
+        }
+        ShiftRowsInverse(state);
+        SubBytes(state);
+        for(int round=0;round < rounds;round++){
+            for(int a = 0;a<16;a++){
+                roundKey[a] = ExpandedKey[(ExpandedKey.length-16*(round+1)) + a];//key 9-1
+            }
+            /*
+            https://crypto.stackexchange.com/questions/2569/how-does-one-implement-the-inverse-of-aes-mixcolumns
+            MixColumns inverse function math
+             */
+            ShiftRowsInverse(state);
+            SubBytes(state);
+        }
+
+        return state;
+    }
+    public void SubBytes(char[] state){
+        for(int i = 0;i<16;i++){
+            state[i] = sBox[state[i]];
+        }
+    }
+    public void ShiftRowsInverse(char[] state){    //inverse
+        char[] temp = new char[16];
+
+        temp[0] = state[0];
+        temp[1] = state[13];
+        temp[2] = state[10];
+        temp[3] = state[7];
+
+        temp[4] = state[4];
+        temp[5] = state[1];
+        temp[6] = state[14];
+        temp[7] = state[11];
+
+        temp[8] = state[8];
+        temp[9] = state[5];
+        temp[10] = state[2];
+        temp[11] = state[15];
+
+        temp[12] = state[12];
+        temp[13] = state[9];
+        temp[14] = state[6];
+        temp[15] = state[3];
+
+        for (int i = 0;i<16;i++){
+            state[i] = temp[i];
+        }
+    }
+    public void printStatePerRound(char[] state,int round){
+        switch(round){
+            case -1:
+                System.out.println("State bytes");
+                break;
+            case 0:
+                System.out.println("PreRound");
+                break;
+            default:
+                System.out.printf("Round Number %d\n\r",round);
+        }
+        for(char a: state){
+            System.out.printf(String.format("0x%02x ",(int) a));
+        }
+        System.out.println("\n\r");
+    }
 }
