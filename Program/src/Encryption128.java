@@ -1,5 +1,4 @@
 
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -86,7 +85,6 @@ public class Encryption128 implements SharedAES{
         for(int i = 0;i<16;i++){
              state[i] = text[i];
         }
-        int rounds = 9;
         printStatePerRound(state,-1);   //round 0, preRound
 
         AddRoundKey(state,key);
@@ -94,7 +92,7 @@ public class Encryption128 implements SharedAES{
         for(int i = 0;i<rounds;i++){        //rounds 1-9
             SubBytes(state);
             ShiftRows(state);
-            MixColoums(state);
+            MixColunms(state);
             for(int a = 0;a<16;a++){
                 roundKey[a] = ExpandedKey[a+16*(i+1)];
             }
@@ -116,10 +114,9 @@ public class Encryption128 implements SharedAES{
         for(int i = 0;i<16;i++){
             state[i] = sBox[state[i]];
         }
-
     }
     public void ShiftRows(char[] state){
-       char[] temp = new char[16];
+        char[] temp = new char[16];
 
         temp[0] = state[0];
         temp[1] = state[5];
@@ -147,7 +144,7 @@ public class Encryption128 implements SharedAES{
         }
 
     }
-    public void MixColoums(char[] state){
+    public void MixColunms(char[] state){
        char[] temp = new char[16];
 
         temp[0] = (char)(mul2[state[0]] ^ mul3[state[1]] ^ state[2] ^ state[3]);    //Dot products and matrix multiplication
@@ -182,6 +179,7 @@ public class Encryption128 implements SharedAES{
 
         }
     }
+
     public void printStatePerRound(char[] state,int round){
         switch(round){
             case -1:
