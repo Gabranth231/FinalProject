@@ -4,6 +4,7 @@ public class Menu {
     private int controlNum;
     private boolean run = true;
     private Encryption128 obj = new Encryption128();
+    private Decryption Dobj;
     private char[] temp = new char[16];
     private char[] encryptedText;
     private char[] decryptedText;
@@ -19,6 +20,7 @@ public class Menu {
                     Encryption();
                     break;
                 case 2:
+                    Dobj = new Decryption(SharedAES.key);
                     paddedDecryptedText = Decryption();
                     truncate();
                     break;
@@ -74,13 +76,31 @@ public class Menu {
             if(count % 16 == 0 && count != 0){
                 System.out.println();
             }
-            System.out.printf(String.format("0x%02x ",(int) a));
+            System.out.printf("%c",a);
+            //System.out.printf(String.format("0x%02x ",(int) a));
             count++;
         }
 
     }
     public char[] Decryption(){
-        return null;
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter text to encrypt: ");
+        String myText = sc.nextLine();
+
+        int i = 0;
+        decryptedText = new char[myText.length()];
+        while (i < myText.length()){
+            for(int a = 0;a<16;a++){
+                temp[a] = myText.charAt(a+i);
+            }
+            char[] t = Dobj.decrypt(temp);
+            for(int a = 0;a<16;a++){
+                encryptedText[i+a] = t[a];
+            }
+            i+=16;
+        }
+
+    return encryptedText;
     }
     public void truncate(){
         int check = paddedDecryptedText.length;
