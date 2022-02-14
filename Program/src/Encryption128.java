@@ -7,6 +7,7 @@ public class Encryption128 implements SharedAES{
 
     char[] ExpandedKey;
 
+
     @Override
     public char[] KeyExpansionCore(char[] in, int num){
         //rotate left
@@ -169,14 +170,12 @@ public class Encryption128 implements SharedAES{
 
         for(int i = 0;i<16;i++){
             state[i] = temp[i];
-
         }
 
     }
     public void AddRoundKey(char[] state, char[] key){
         for (int i = 0;i<16;i++){
             state[i] = (char) (state[i] ^ key[i]);
-
         }
     }
 

@@ -56,7 +56,7 @@ public class Decryption implements SharedAES{
 
     public char[] decrypt(char[] cipherText){
         state = new char[16];
-        char[] roundKey =new char[16];
+        char[] roundKey = new char[16];
 
         for(int i = 0;i<16;i++){
             state[i] = cipherText[i];
@@ -65,25 +65,60 @@ public class Decryption implements SharedAES{
         for(int a = 0;a<16;a++){
             roundKey[a] = ExpandedKey[(ExpandedKey.length-16) + a];//key 10
         }
+        AddRoundKey(state,roundKey);
         ShiftRowsInverse(state);
         SubBytes(state);
         for(int round=0;round < rounds;round++){
             for(int a = 0;a<16;a++){
                 roundKey[a] = ExpandedKey[(ExpandedKey.length-16*(round+1)) + a];//key 9-1
             }
-            /*
-            https://crypto.stackexchange.com/questions/2569/how-does-one-implement-the-inverse-of-aes-mixcolumns
-            MixColumns inverse function math
-             */
+            AddRoundKey(state,roundKey);
+            mixColumns(state);
             ShiftRowsInverse(state);
             SubBytes(state);
         }
+        for(int a = 0;a<16;a++){
+            roundKey[a] = ExpandedKey[a];//key 9-1
+        }
+        AddRoundKey(state,roundKey);
 
         return state;
     }
     public void SubBytes(char[] state){
         for(int i = 0;i<16;i++){
             state[i] = sBox[state[i]];
+        }
+    }
+    public void AddRoundKey(char[] state, char[] key){
+        for (int i = 0;i<16;i++){
+            state[i] = (char) (state[i] ^ key[i]);
+        }
+    }
+    public void mixColumns(char[] state){
+        char[] temp = new char[16];
+
+        temp[0] = (char)(mul14[state[0]] ^ mul11[state[1]] ^ mul13[state[2]] ^ mul9[state[3]]);    //Dot products and matrix multiplication
+        temp[1] = (char)(mul9[state[0]] ^ mul14[state[1]] ^ mul11[state[2]] ^ mul13[state[3]]);    //Got stuck on this for quite some time
+        temp[2] = (char)(mul13[state[0]] ^ mul9[state[1]] ^ mul14[state[2]] ^ mul11[state[3]]);    //Galois mul tables
+        temp[3] = (char)(mul11[state[0]] ^ mul13[state[1]] ^ mul9[state[2]] ^ mul14[state[3]]);
+
+        temp[4] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
+        temp[5] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
+        temp[6] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
+        temp[7] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
+
+        temp[8] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[9] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[10] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[11] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+
+        temp[12] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[13] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[14] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[15] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+
+        for(int i = 0;i<16;i++){
+            state[i] = temp[i];
         }
     }
     public void ShiftRowsInverse(char[] state){    //inverse
