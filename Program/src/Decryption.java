@@ -66,14 +66,19 @@ public class Decryption implements SharedAES{
             roundKey[a] = ExpandedKey[(ExpandedKey.length-16) + a];//key 10
         }
         AddRoundKey(state,roundKey);
+        printStatePerRound(state,-1);
         ShiftRowsInverse(state);
+        printStatePerRound(state,-1);
         SubBytes(state);
+        printStatePerRound(state,-1);
         for(int round=0;round < rounds;round++){
             for(int a = 0;a<16;a++){
                 roundKey[a] = ExpandedKey[(ExpandedKey.length-16*(round+1)) + a];//key 9-1
             }
             AddRoundKey(state,roundKey);
+            printStatePerRound(state,-1);
             mixColumns(state);
+            printStatePerRound(state,-1);
             ShiftRowsInverse(state);
             SubBytes(state);
         }
@@ -86,7 +91,7 @@ public class Decryption implements SharedAES{
     }
     public void SubBytes(char[] state){
         for(int i = 0;i<16;i++){
-            state[i] = sBox[state[i]];
+            state[i] = sBoxInv[state[i]];
         }
     }
     public void AddRoundKey(char[] state, char[] key){

@@ -76,8 +76,7 @@ public class Menu {
             if(count % 16 == 0 && count != 0){
                 System.out.println();
             }
-            System.out.printf("%c",a);
-            //System.out.printf(String.format("0x%02x ",(int) a));
+            System.out.printf("%c",a);    //print as hex/ ("%c", a)
             count++;
         }
 
