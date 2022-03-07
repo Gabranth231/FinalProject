@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class Encryption128 implements SharedAES{
     private char state[];
-
     char[] ExpandedKey;
 
 
