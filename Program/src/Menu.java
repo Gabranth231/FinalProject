@@ -21,8 +21,8 @@ public class Menu {
                     break;
                 case 2:
                     Dobj = new Decryption(SharedAES.key);
-                    paddedDecryptedText = Decryption();
-                    truncate();
+                    Decryption();
+                    //truncate();
                     break;
                 case 3:
                     System.out.println("Cancel operation?\n\r 1 for yes\t2 for no");
@@ -76,12 +76,19 @@ public class Menu {
             if(count % 16 == 0 && count != 0){
                 System.out.println();
             }
+            System.out.printf("0x%02x ",(int)a);    //print as hex/ ("%c", a)
+            count++;
+        }
+        for(char a: encryptedText){
+            if(count % 16 == 0 && count != 0){
+                System.out.println();
+            }
             System.out.printf("%c",a);    //print as hex/ ("%c", a)
             count++;
         }
 
     }
-    public char[] Decryption(){
+    public void Decryption(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter text to encrypt: ");
         String myText = sc.nextLine();
@@ -94,14 +101,22 @@ public class Menu {
             }
             char[] t = Dobj.decrypt(temp);
             for(int a = 0;a<16;a++){
-                encryptedText[i+a] = t[a];
+                decryptedText[i+a] = t[a];
             }
             i+=16;
         }
+        System.out.println("Decrypted text");
+        int count = 0;
+        for(char a: decryptedText){
+            if(count % 16 == 0 && count != 0){
+                System.out.println();
+            }
+            System.out.printf("%c",a);    //print as hex/ ("%c", a)
+            count++;
+        }
 
-    return encryptedText;
     }
-    public void truncate(){
+    /*public void truncate(){
         int check = paddedDecryptedText.length;
         if(paddedDecryptedText[check] == 0){
             for (int i = 0;i<paddedDecryptedText.length;i++){
@@ -113,5 +128,5 @@ public class Menu {
         else{
             decryptedText = paddedDecryptedText;
         }
-    }
+    }*/
 }
