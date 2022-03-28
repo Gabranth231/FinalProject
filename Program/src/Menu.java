@@ -21,8 +21,7 @@ public class Menu {
                     break;
                 case 2:
                     Dobj = new Decryption(SharedAES.key);
-                    paddedDecryptedText = Decryption();
-                    truncate();
+                    Decryption();
                     break;
                 case 3:
                     System.out.println("Cancel operation?\n\r 1 for yes\t2 for no");
@@ -73,15 +72,12 @@ public class Menu {
         System.out.println("Encrypted text");
         int count = 0;
         for(char a: encryptedText){
-            if(count % 16 == 0 && count != 0){
-                System.out.println();
-            }
             System.out.printf("%c",a);    //print as hex/ ("%c", a)
             count++;
         }
 
     }
-    public char[] Decryption(){
+    public void Decryption(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter text to encrypt: ");
         String myText = sc.nextLine();
@@ -98,8 +94,13 @@ public class Menu {
             }
             i+=16;
         }
+        System.out.println("Decrypted text");
+        int count = 0;
+        for(char a: encryptedText){
+            System.out.printf("%c",a);    //print as hex/ ("%c", a)
+            count++;
+        }
 
-    return encryptedText;
     }
     public void truncate(){
         int check = paddedDecryptedText.length;
