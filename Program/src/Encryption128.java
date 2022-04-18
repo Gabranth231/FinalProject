@@ -86,22 +86,25 @@ public class Encryption128 implements SharedAES{
              state[i] = text[i];
         }
         printStatePerRound(state,-1);   //round 0, preRound
-
         AddRoundKey(state,key);
         printStatePerRound(state,0);   //round 0, preRound
         for(int i = 0;i<rounds;i++){        //rounds 1-9
             SubBytes(state);
+            printStatePerRound(state,-1);
             ShiftRows(state);
+            printStatePerRound(state,-1);
             MixColunms(state);
+            printStatePerRound(state,-1);
             for(int a = 0;a<16;a++){
                 roundKey[a] = ExpandedKey[a+16*(i+1)];
             }
             AddRoundKey(state,roundKey);
             printStatePerRound(state,i+1);
         }
-
         SubBytes(state);
+        printStatePerRound(state,-1);
         ShiftRows(state);
+        printStatePerRound(state,-1);
         for(int a = 0;a<16;a++){
             roundKey[a] = ExpandedKey[a+160];
         }

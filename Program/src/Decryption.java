@@ -72,21 +72,24 @@ public class Decryption implements SharedAES{
         SubBytes(state);
         printStatePerRound(state,-1);
         for(int round=0;round < rounds;round++){
-            for(int a = 0;a<16;a++){
-                roundKey[a] = ExpandedKey[(ExpandedKey.length-16*(round+1)) + a];//key 9-1
+            for(int a = 0;a<=15;a++){
+                roundKey[a] = ExpandedKey[(ExpandedKey.length-32 -(16*round)) + a];//key 9-1
             }
             AddRoundKey(state,roundKey);
             printStatePerRound(state,-1);
             mixColumns(state);
             printStatePerRound(state,-1);
             ShiftRowsInverse(state);
+            printStatePerRound(state,-1);
             SubBytes(state);
+            printStatePerRound(state,-1);
+
         }
         for(int a = 0;a<16;a++){
             roundKey[a] = ExpandedKey[a];//key 9-1
         }
         AddRoundKey(state,roundKey);
-
+        printStatePerRound(state,-1);
         return state;
     }
     public void SubBytes(char[] state){
@@ -107,20 +110,20 @@ public class Decryption implements SharedAES{
         temp[2] = (char)(mul13[state[0]] ^ mul9[state[1]] ^ mul14[state[2]] ^ mul11[state[3]]);    //Galois mul tables
         temp[3] = (char)(mul11[state[0]] ^ mul13[state[1]] ^ mul9[state[2]] ^ mul14[state[3]]);
 
-        temp[4] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
-        temp[5] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
-        temp[6] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
+        temp[4] = (char)(mul14[state[4]] ^ mul11[state[5]] ^ mul13[state[6]] ^ mul9[state[7]]);
+        temp[5] = (char)(mul9[state[4]] ^ mul14[state[5]] ^ mul11[state[6]] ^ mul13[state[7]]);
+        temp[6] = (char)(mul13[state[4]] ^ mul9[state[5]] ^ mul14[state[6]] ^ mul11[state[7]]);
         temp[7] = (char)(mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]]);
 
-        temp[8] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
-        temp[9] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
-        temp[10] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[8] = (char)(mul14[state[8]] ^ mul11[state[9]] ^ mul13[state[10]] ^ mul9[state[11]]);
+        temp[9] = (char)(mul9[state[8]] ^ mul14[state[9]] ^ mul11[state[10]] ^ mul13[state[11]]);
+        temp[10] = (char)(mul13[state[8]] ^ mul9[state[9]] ^ mul14[state[10]] ^ mul11[state[11]]);
         temp[11] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
 
-        temp[12] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
-        temp[13] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
-        temp[14] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
-        temp[15] = (char)(mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]]);
+        temp[12] = (char)(mul14[state[12]] ^ mul11[state[13]] ^ mul13[state[14]] ^ mul9[state[15]]);
+        temp[13] = (char)(mul9[state[12]] ^ mul14[state[13]] ^ mul11[state[14]] ^ mul13[state[15]]);
+        temp[14] = (char)(mul13[state[12]] ^ mul9[state[13]] ^ mul14[state[14]] ^ mul11[state[15]]);
+        temp[15] = (char)(mul11[state[12]] ^ mul13[state[13]] ^ mul9[state[14]] ^ mul14[state[15]]);
 
         for(int i = 0;i<16;i++){
             state[i] = temp[i];
