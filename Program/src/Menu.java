@@ -8,7 +8,6 @@ public class Menu {
     private char[] temp = new char[16];
     private char[] encryptedText;
     private char[] decryptedText;
-    private char[] paddedDecryptedText;
 
     public void startMenu(){
         while(run){
@@ -51,7 +50,7 @@ public class Menu {
         char[] paddedText = new char[paddedTextLen];
         for(int i = 0;i<paddedTextLen;i++){
             if(i>=originalLength){
-                paddedText[i] = 0;
+                paddedText[i] = '0';
             }
             else{
                 paddedText[i] = myText.charAt(i);
@@ -75,13 +74,12 @@ public class Menu {
             System.out.printf("%c",a);    //print as hex/ ("%c", a)
             count++;
         }
-
+        System.out.println("||");
     }
     public void Decryption(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter text to encrypt: ");
-        String myText = sc.nextLine();
-
+        String myText = sc.next();
         int i = 0;
         decryptedText = new char[myText.length()];
         while (i < myText.length()){
@@ -90,29 +88,33 @@ public class Menu {
             }
             char[] t = Dobj.decrypt(temp);
             for(int a = 0;a<16;a++){
-                encryptedText[i+a] = t[a];
+                decryptedText[i+a] = t[a];
             }
             i+=16;
         }
         System.out.println("Decrypted text");
         int count = 0;
-        for(char a: encryptedText){
+        truncate(decryptedText);
+        for(char a: decryptedText){
             System.out.printf("%c",a);    //print as hex/ ("%c", a)
             count++;
         }
 
     }
-    public void truncate(){
-        int check = paddedDecryptedText.length;
-        if(paddedDecryptedText[check] == 0){
-            for (int i = 0;i<paddedDecryptedText.length;i++){
-                if(paddedDecryptedText[i] != 0){
-                    decryptedText[i] = paddedDecryptedText[i];
-                }
+    public void truncate(char[] text){
+        if(text[text.length - 1] == '0'){
+            int size = 0;
+            while (text[size] != '0'){
+                size++;
             }
+            char[] cuttext = new char[size];
+            for(int i = 0;i<size;i++){
+                cuttext[i] = text[i];
+            }
+            decryptedText = cuttext;
         }
-        else{
-            decryptedText = paddedDecryptedText;
+        else {
+            decryptedText = text;
         }
     }
 }

@@ -8,6 +8,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String encryptKey;
     private String name;
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -16,6 +17,14 @@ public class User {
     @JoinColumn(name = "userID")
     private List<File> fileList;
     public User() {
+    }
+
+    public String getKey() {
+        return encryptKey;
+    }
+
+    public void setKey(String encryptKey) {
+        this.encryptKey = encryptKey;
     }
 
     public int getId() {

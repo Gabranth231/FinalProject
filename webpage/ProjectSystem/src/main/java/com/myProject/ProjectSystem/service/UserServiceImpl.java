@@ -1,5 +1,6 @@
 package com.myProject.ProjectSystem.service;
 
+import com.myProject.ProjectSystem.AES.Encryption128;
 import com.myProject.ProjectSystem.model.File;
 import com.myProject.ProjectSystem.model.User;
 import com.myProject.ProjectSystem.repo.FileRepo;
@@ -18,6 +19,10 @@ public class UserServiceImpl implements UserService{
     private FileRepo fileRepo;
     @Override
     public User saveUser(User user) {
+        Encryption128 myObj = new Encryption128();
+        String str = String.valueOf(myObj.getKey());
+        user.setKey(str);
+
         return userRepo.save(user);
     }
 
