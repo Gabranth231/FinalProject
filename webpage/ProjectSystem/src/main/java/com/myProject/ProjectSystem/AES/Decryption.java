@@ -2,6 +2,7 @@ package com.myProject.ProjectSystem.AES;
 
 public class Decryption implements SharedAES{
     private char state[];
+    private char[] key = new char[16];
     char[] ExpandedKey;
 
     @Override
@@ -45,10 +46,43 @@ public class Decryption implements SharedAES{
             }
         }
     }
-    Decryption(char[] myKey){
-        KeyExpansion(myKey);
+    public Decryption(String myKey){
+        setKey(myKey);
+        KeyExpansion(key);
     }
-
+    public String decryption(String text){
+        char[] decryptedText;
+        char[] temp = new char[16];
+        int i = 0;
+        decryptedText = new char[text.length()];
+        while (i < text.length()){
+            for(int a = 0;a<16;a++){
+                temp[a] = text.charAt(a+i);
+            }
+            char[] t = decrypt(temp);
+            for(int a = 0;a<16;a++){
+                decryptedText[i+a] = t[a];
+            }
+            i+=16;
+        }
+        return truncate(decryptedText);
+    }
+    public String truncate(char[] text){
+        if(text[text.length - 1] == '0'){
+            int size = 0;
+            while (text[size] != '0'){
+                size++;
+            }
+            char[] cuttext = new char[size];
+            for(int i = 0;i<size;i++){
+                cuttext[i] = text[i];
+            }
+            return String.valueOf(cuttext);
+        }
+        else {
+            return String.valueOf(text);
+        }
+    }
     public char[] decrypt(char[] cipherText){
         state = new char[16];
         char[] roundKey = new char[16];
@@ -141,7 +175,16 @@ public class Decryption implements SharedAES{
             state[i] = temp[i];
         }
     }
-    public void printStatePerRound(char[] state,int round){
+
+    public char[] getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key.toCharArray();
+    }
+
+    public void printStatePerRound(char[] state, int round){
         switch(round){
             case -1:
                 System.out.println("State bytes");
