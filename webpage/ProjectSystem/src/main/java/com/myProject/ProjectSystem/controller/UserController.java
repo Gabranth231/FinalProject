@@ -4,6 +4,7 @@ import com.myProject.ProjectSystem.model.File;
 import com.myProject.ProjectSystem.model.User;
 import com.myProject.ProjectSystem.service.UserService;
 import com.myProject.ProjectSystem.type.FileData;
+import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class UserController {
    @Autowired
    private UserService userService;
-    @PostMapping("/add")
+    @PostMapping("/signup")
     public String addUser(@RequestBody User user){
         userService.saveUser(user);
         return "New User is added";
@@ -31,6 +32,14 @@ public class UserController {
     @GetMapping("/getFilesFromUser")
     public List<File> getFiles(@RequestBody User User){
         return userService.getFiles(User);
+    }
+    @PostMapping("/login")
+    public String login(@RequestBody User user){
+        String check = userService.login(user);
+        if(check == "Succeed"){
+            return "{value: 'Login'}";
+        }
+        return "no User with that name";
     }
 
 }

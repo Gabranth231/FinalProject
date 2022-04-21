@@ -55,18 +55,54 @@ public class Encryption128 implements SharedAES{
         return key;
     }
 
-    public void setKey() {
+    public void setrandKey() {
         for(int x = 0;x<16;x++){
             key[x] = (char) ('a' + rand.nextInt(26));
         }
 
     }
 
-    public Encryption128(){
-        setKey();       //random key of characters
-        KeyExpansion(key);
+    public void setKey(String key) {
+        this.key = key.toCharArray();
     }
 
+    public Encryption128(){
+        setrandKey();       //random key of characters
+        KeyExpansion(key);
+    }
+    public String encryption(String text, String key){
+        char[] encryptedText;
+        char[] temp = new char[16];
+        setKey(key);
+        int originalLength = text.length();
+        int paddedTextLen = originalLength;
+
+        if(paddedTextLen % 16 != 0){                    //pads the message to make sure the message is a multiple of 16
+            paddedTextLen = (paddedTextLen / 16 + 1) * 16;
+        }
+        char[] paddedText = new char[paddedTextLen];
+        for(int i = 0;i<paddedTextLen;i++){
+            if(i>=originalLength){
+                paddedText[i] = '0';
+            }
+            else{
+                paddedText[i] = text.charAt(i);
+            }
+        }
+        int i = 0;
+        encryptedText = new char[paddedTextLen];
+        while (i < paddedTextLen){
+            for(int a = 0;a<16;a++){
+                temp[a] = paddedText[a+i];
+            }
+            char[] t = encrypt(temp);
+            for(int a = 0;a<16;a++){
+                encryptedText[i+a] = t[a];
+            }
+            i+=16;
+        }
+        return String.valueOf(encryptedText);
+    }
     public char[] encrypt(char[] text){
         state = new char[16];
         char[] roundKey = new char[16];

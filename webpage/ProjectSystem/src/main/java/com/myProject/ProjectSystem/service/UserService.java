@@ -8,6 +8,7 @@ import java.util.List;
 
 
 public interface UserService {
+    public String login(User user);
     public User saveUser(User user);
     public List<User> getAllUsers();
     public User addFile(FileData fileData);
