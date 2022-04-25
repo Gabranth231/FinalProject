@@ -7,6 +7,7 @@ import com.myProject.ProjectSystem.model.User;
 import com.myProject.ProjectSystem.repo.FileRepo;
 import com.myProject.ProjectSystem.repo.UserRepo;
 import com.myProject.ProjectSystem.type.FileData;
+import com.myProject.ProjectSystem.type.Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +63,22 @@ public class UserServiceImpl implements UserService{
             f.setText(text);
         }
         return files;
+    }
+
+    @Override
+    public FileData transfer(Transfer transfer) {
+        File file = new File();
+        User user = userRepo.findByName(transfer.getUserName());
+        User contact = userRepo.findByName(transfer.getReceiverName());
+        for(File f: user.getFileList()){
+            if(f.getFileID() == transfer.getFileID()){
+                file = fileRepo.getById(f.getFileID());
+            }
+        }
+        Decryption decryption = new Decryption(user.getKey());
+        FileData fileData = new FileData();
+        fileData.setName(contact.getName());
+        fileData.setText(decryption.decryption(file.getText()));
+        return fileData;
     }
 }

@@ -4,6 +4,7 @@ import com.myProject.ProjectSystem.model.File;
 import com.myProject.ProjectSystem.model.User;
 import com.myProject.ProjectSystem.service.UserService;
 import com.myProject.ProjectSystem.type.FileData;
+import com.myProject.ProjectSystem.type.Transfer;
 import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,9 @@ public class UserController {
         }
         return "no User with that name";
     }
-
+    @PostMapping("/transfer")
+    public String transferFiles(@RequestBody Transfer transfer){
+        FileData fileData = userService.transfer(transfer);
+        return addFile(fileData);
+    }
 }
